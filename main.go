@@ -1,17 +1,18 @@
 package main
 
 import (
-	"fmt"
+	"crypto/rand"
 	"flag"
+	"fmt"
 	"math"
-	"math/rand"
+	"math/big"
 )
 
 func main() {
 	p := flag.Float64("p", 1e-9, "acceptable probability of password compromise")
 	v := flag.Float64("v", 100, "bruteforce speed (guesses per second)")
 	t := flag.Float64("t", 7*24*3600, "password lifetime in seconds")
-	a := flag.Int("a", 62, "alphabet size (26, 36, 62, 95)")
+	a := flag.Int("a", 62, "alphabet size (26, 36, 62, 94)")
 
 	flag.Parse()
 
@@ -35,8 +36,8 @@ func buildAlphabet(A int) []rune {
 		return []rune("abcdefghijklmnopqrstuvwxyz0123456789")
 	case 62:
 		return []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
-	case 95:
-		return []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~ ")
+	case 94:
+		return []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~")
 	default:
 		panic("unsupported alphabet size")
 	}
@@ -45,7 +46,11 @@ func buildAlphabet(A int) []rune {
 func generatePassword(length int, alphabet []rune) string {
 	pwd := make([]rune, length)
 	for i := range pwd {
-		pwd[i] = alphabet[rand.Intn(len(alphabet))]
+		n, err := rand.Int(rand.Reader, big.NewInt(int64(len(alphabet))))
+		if err != nil {
+			panic (err)
+		}
+		pwd[i] = alphabet[n.Int64()]
 	}
 	return string(pwd)
 }
