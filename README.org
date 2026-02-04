@@ -1,0 +1,4 @@
+#+title: Readme
+#+author: Nortania Research Task
+
+This is a CLI application for generating passwords
