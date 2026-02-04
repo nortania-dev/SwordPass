@@ -3,3 +3,5 @@
 
 * Description
 This is a CLI application for generating passwords
+** Functions
+- Generate password with selected strength based on selected duration and speed of attacker
